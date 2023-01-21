@@ -1,8 +1,9 @@
-module Pages.Home_ exposing (Model, Msg, page)
+module Pages.Home_ exposing (..)
 
 import Browser.Dom
 import Browser.Events
-import Element exposing (Element)
+import Const exposing (const)
+import Element exposing (..)
 import Html exposing (Html)
 import Html.Attributes
 import Page exposing (Page)
@@ -68,33 +69,6 @@ null_question =
     }
 
 
-const =
-    { questions =
-        [ { question = "In my free time, I prefer to..."
-          , choices =
-                [ { select = "Go out with friends"
-                  , answer = "In your free time, you prefer to meet people. This might means that you are an extrovert, or simply hate watching movies."
-                  }
-                , { select = "Watch movie alone, but it is sad tho"
-                  , answer = "In your free time, you prefer to watch movie alone than meeting people. It might be the case that you are an introvert, or possibly an extrovert that loves watching movies."
-                  }
-                ]
-          }
-        , { question = "Do you believe that this test define who you are?"
-          , choices =
-                [ { select = "Yes"
-                  , answer = "You do believe that this test define your personality, and you were almost correct."
-                  }
-                , { select = "No"
-                  , answer = "You don't think that the test define you, but to be fair, it does say what kind of person you are at the moment."
-                  }
-                ]
-          }
-        ]
-    , ending = "Although the above description about you is perfect, it does not define who you are. People change!"
-    }
-
-
 page : Page Model Msg
 page =
     Page.element
@@ -133,34 +107,25 @@ appendAnswerService : Answer -> Model -> ( Model, Cmd Msg )
 appendAnswerService ans mod =
     let
         newmod =
-            { mod
-                | answers = ans :: mod.answers
-                , questions =
-                    case List.tail mod.questions of
-                        Just questions ->
-                            questions
+            case List.tail mod.questions of
+                Just [] ->
+                    { mod
+                        | answers = ans :: mod.answers
+                        , appstate = ResultState
+                    }
 
-                        Nothing ->
-                            [ null_question ]
-            }
-    in
-    let
-        nowLength =
-            List.length newmod.answers
-    in
-    let
-        expLength =
-            List.length const.questions
-    in
-    if nowLength == expLength then
-        ( { newmod
-            | appstate = ResultState
-          }
-        , Cmd.none
-        )
+                Just questions ->
+                    { mod
+                        | answers = ans :: mod.answers
+                        , questions = questions
+                    }
 
-    else
-        ( newmod, Cmd.none )
+                Nothing ->
+                    { mod
+                        | questions = [ null_question ] --Error:
+                    }
+    in
+    ( newmod, Cmd.none )
 
 
 startService : Model -> ( Model, Cmd Msg )
@@ -211,6 +176,17 @@ type alias Component =
     Model -> Element Msg
 
 
+waitScreen : Component
+waitScreen _ =
+    Styled.col
+        [ el [ centerX ] (text "Ready?")
+        , Styled.button
+            { onPress = Just StartMsg
+            , label = text "Start!"
+            }
+        ]
+
+
 getNowQuestion : Model -> Question
 getNowQuestion model =
     case List.head model.questions of
@@ -225,32 +201,21 @@ showChoiceButton : Choice -> Element Msg
 showChoiceButton choice =
     Styled.button
         { onPress = Just <| AppendAnswerMsg choice.answer
-        , label = Element.text choice.select
+        , label = text choice.select
         }
 
 
 showChoiceButtons : List Choice -> Element Msg
 showChoiceButtons choices =
-    Element.wrappedRow [ Element.centerX, Element.spacing 15 ] <| List.map showChoiceButton choices
-
-
-waitScreen : Component
-waitScreen _ =
-    Styled.col
-        [ Element.text "Ready?"
-        , Styled.button
-            { onPress = Just StartMsg
-            , label = Element.text "Start!"
-            }
-        ]
+    wrappedRow [ centerX, spacing 15 ] <| List.map showChoiceButton choices
 
 
 questionScreen : Component
 questionScreen model =
-    Element.column [ Element.centerX, Element.spacing 10, Element.width Element.fill ]
-        [ Element.paragraph
-            [ Html.Attributes.style "word-break" "normal" |> Element.htmlAttribute ]
-            [ Element.text (getNowQuestion model).question ]
+    column [ centerX, spacing 10, width fill ]
+        [ paragraph
+            [ width shrink, centerX, Html.Attributes.style "word-break" "normal" |> htmlAttribute ]
+            [ el [ centerX ] (text (getNowQuestion model).question) ]
         , showChoiceButtons (getNowQuestion model).choices
         ]
 
@@ -258,33 +223,38 @@ questionScreen model =
 resultScreen : Component
 resultScreen model =
     Styled.col
-        [ Element.text "Here is the result!"
+        [ text "You are a human!"
         , Styled.col
-            [ Element.paragraph
-                [ Html.Attributes.style "word-break" "normal" |> Element.htmlAttribute
+            [ el [] (text "Description")
+            , paragraph
+                [ Html.Attributes.style "word-break" "normal" |> htmlAttribute
+                , Styled.smallResponsiveFont model.device
                 ]
-                [ Element.text (answersToString model.answers)
-                , Element.text const.ending
+                [ text (answersToString model.answers) ]
+            , paragraph
+                [ Html.Attributes.style "word-break" "normal" |> htmlAttribute
+                , Styled.smallResponsiveFont model.device
                 ]
+                [ text const.ending ]
             ]
         , Styled.button
             { onPress = Just BackHomeMsg
-            , label = Element.text "back to home"
+            , label = text "back to home"
             }
         ]
 
 
 baseLayout : Model -> List (Element Msg) -> List (Html Msg)
 baseLayout model elements =
-    Element.layout
+    layout
         [ Styled.responsiveFont model.device
-        , Element.padding 20
-        , Element.width Element.fill
+        , padding 20
+        , width fill
         ]
-        (Element.column
-            [ Element.centerX
-            , Element.paddingXY 0 0
-            , Element.width Element.fill
+        (column
+            [ centerX
+            , paddingXY 0 0
+            , width fill
             ]
             elements
         )
@@ -293,9 +263,9 @@ baseLayout model elements =
 
 headerComponent : Component
 headerComponent _ =
-    Element.el
-        [ Element.paddingXY 0 50 ]
-        (Element.text "The Ultimate Personality Test")
+    el
+        [ paddingXY 0 50, centerX ]
+        (text "The Ultimate Personality Test")
 
 
 view : Model -> View Msg

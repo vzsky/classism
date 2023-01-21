@@ -63,19 +63,20 @@ responsiveTransform data device =
 
 button : { onPress : Maybe msg, label : Element msg } -> Element msg
 button =
-    Element.el []
+    Element.el [ Element.width Element.fill ]
         << Element.Input.button
             [ Element.Background.color (Element.rgb 1 0.9 0.6)
             , Element.Border.rounded 5
             , Element.paddingXY 5 5
             , Element.focused []
+            , Element.centerX
             ]
 
 
 col : List (Element msg) -> Element msg
 col =
     Element.column
-        [ Element.spacing 10, Element.width Element.fill ]
+        [ Element.spacing 10, Element.width Element.fill, Element.centerX ]
 
 
 responsiveFont : Device -> Element.Attr decoration msg
@@ -85,4 +86,13 @@ responsiveFont =
         , tablet = Element.Font.size 30
         , desktop = Element.Font.size 30
         , bigdesktop = Element.Font.size 30
+        }
+
+smallResponsiveFont : Device -> Element.Attr decoration msg
+smallResponsiveFont =
+    responsiveTransform
+        { mobile = Element.Font.size 10
+        , tablet = Element.Font.size 20
+        , desktop = Element.Font.size 20
+        , bigdesktop = Element.Font.size 20
         }

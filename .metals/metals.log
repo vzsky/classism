@@ -1,0 +1,13 @@
+2023.01.21 12:56:36 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /Users/mb99n/Desktop/classism/.metals/lsp.trace.json or /Users/mb99n/Library/Caches/org.scalameta.metals/lsp.trace.json[0m
+2023.01.21 12:56:37 INFO  logging to file /Users/mb99n/Desktop/classism/.metals/metals.log[0m
+2023.01.21 12:56:37 INFO  Started: Metals version 0.11.10 in workspace '/Users/mb99n/Desktop/classism' for client Visual Studio Code 1.74.3.[0m
+2023.01.21 12:56:37 WARN  Can't instantiate JavaInteractiveSemanticdb (version: JdkVersion(8), jdkHome: /Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home, javac exists: false)[0m
+SLF4J: No SLF4J providers were found.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See https://www.slf4j.org/codes.html#noProviders for further details.
+SLF4J: Class path contains SLF4J bindings targeting slf4j-api versions 1.7.x or earlier.
+SLF4J: Ignoring binding found at [jar:file:/Users/mb99n/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/outr/scribe-slf4j_2.13/3.10.5/scribe-slf4j_2.13-3.10.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See https://www.slf4j.org/codes.html#ignoredBindings for an explanation.
+2023.01.21 12:56:38 INFO  time: initialize in 1.29s[0m
+2023.01.21 12:56:39 WARN  Build server is not auto-connectable.[0m
+2023.01.21 12:56:39 WARN  no build tool detected in workspace '/Users/mb99n/Desktop/classism'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
